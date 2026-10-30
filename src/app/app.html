@@ -1,0 +1,46 @@
+<header class="header">
+  <div class="brand">
+    <h1>EU Data Explorer</h1>
+    <p class="tagline">How Hungary and the rest of the EU compare, from Eurostat open data.</p>
+  </div>
+  <nav class="tabs" aria-label="Views">
+    <a routerLink="/" queryParamsHandling="preserve" routerLinkActive="tab--active"
+       [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page" class="tab">Table</a>
+    <a routerLink="/compare" queryParamsHandling="preserve" routerLinkActive="tab--active"
+       ariaCurrentWhenActive="page" class="tab">Compare</a>
+  </nav>
+</header>
+
+<section class="toolbar" aria-label="Indicator">
+  <label class="field">
+    <span>Indicator</span>
+    <select (change)="chooseIndicator($any($event.target).value)">
+      @for (i of indicators; track i.id) {
+        <option [value]="i.id" [selected]="i.id === store.indicatorId()">{{ i.label }}</option>
+      }
+    </select>
+  </label>
+  <p class="description">{{ store.indicator().description }}</p>
+</section>
+
+@if (store.error(); as error) {
+  <div class="banner banner--error" role="alert">
+    <span>{{ error }}</span>
+    <button type="button" class="button" (click)="store.retry()">Try again</button>
+  </div>
+}
+
+<main class="main">
+  <router-outlet />
+</main>
+
+<footer class="footer">
+  <p>
+    Source: <a href="https://ec.europa.eu/eurostat" target="_blank" rel="noopener">Eurostat</a>
+    @if (store.table(); as table) {
+      · dataset updated {{ table.updated.slice(0, 10) }}
+    }
+    · Built by Gábor Patyi ·
+    <a href="https://github.com/PatyiG/eu-data-explorer" target="_blank" rel="noopener">source code</a>
+  </p>
+</footer>

@@ -1,0 +1,39 @@
+:host {
+  display: block;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 16px 32px;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.brand h1 { font-size: 1.6rem; letter-spacing: -0.02em; margin: 0; }
+.tagline { margin: 2px 0 0; color: var(--muted); }
+
+.tabs { display: flex; gap: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 4px; }
+.tab { padding: 6px 14px; border-radius: 7px; color: var(--text); text-decoration: none; font-weight: 600; }
+.tab:hover { background: var(--bg); }
+.tab--active { background: var(--accent-soft); color: var(--accent); }
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+.description { margin: 0 0 6px; color: var(--muted); flex: 1 1 280px; }
+
+.banner {
+  display: flex; gap: 12px; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-radius: 10px; margin-bottom: 16px;
+}
+.banner--error { background: var(--danger-soft); color: var(--danger); border: 1px solid var(--danger); }
+
+.footer { margin-top: 24px; color: var(--muted); font-size: 0.85rem; }

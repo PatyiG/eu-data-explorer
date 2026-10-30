@@ -1,0 +1,35 @@
+<section class="panel" aria-label="Country table">
+  <div class="panel__head">
+    <label class="field field--grow">
+      <span>Find a country</span>
+      <input
+        type="search"
+        placeholder="e.g. Hungary"
+        [value]="quickFilter()"
+        (input)="quickFilter.set($any($event.target).value)"
+      />
+    </label>
+    <p class="legend">
+      <span class="swatch swatch--home" aria-hidden="true"></span> Hungary
+      <span class="swatch swatch--flag" aria-hidden="true"></span> provisional or flagged value
+    </p>
+  </div>
+
+  @if (store.loading() && !data()) {
+    <p class="state" role="status">Loading {{ store.indicator().label.toLowerCase() }} from Eurostat…</p>
+  } @else if (data(); as d) {
+    <ag-grid-angular
+      class="grid"
+      [theme]="theme()"
+      [rowData]="d.countries"
+      [pinnedTopRowData]="pinnedTop()"
+      [columnDefs]="columnDefs()"
+      [defaultColDef]="defaultColDef"
+      [rowClassRules]="rowClassRules"
+      [getRowId]="getRowId"
+      [quickFilterText]="quickFilter()"
+      [tooltipShowDelay]="300"
+      [animateRows]="true"
+    />
+  }
+</section>

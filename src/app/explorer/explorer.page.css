@@ -1,0 +1,27 @@
+.panel__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.legend { margin: 0 0 6px; color: var(--muted); font-size: 0.85rem; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-left: 8px; }
+.swatch--home { background: var(--home-soft); border: 1px solid var(--home); }
+.swatch--flag { background: transparent; border-bottom: 2px dotted var(--muted); border-radius: 0; }
+
+.grid { display: block; height: 640px; }
+@media (max-width: 700px) { .grid { height: 70vh; } }
+
+.state { padding: 40px; text-align: center; color: var(--muted); }
+
+/* AG Grid renders rows outside this component's view, so these rules must not be encapsulated. */
+:host ::ng-deep .row-home { background-color: var(--home-soft) !important; font-weight: 600; }
+:host ::ng-deep .cell-muted { color: var(--muted); }
+:host ::ng-deep .cell-strong { font-weight: 600; }
+:host ::ng-deep .cell-good { color: var(--good); }
+:host ::ng-deep .cell-bad { color: var(--danger); }
+:host ::ng-deep .cell-flagged { text-decoration: underline dotted var(--muted); text-underline-offset: 3px; }
+:host ::ng-deep .ag-row-pinned { font-style: italic; }

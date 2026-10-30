@@ -1,0 +1,50 @@
+<div class="layout">
+  <section class="panel" aria-labelledby="chart-heading">
+    <h2 id="chart-heading">{{ store.indicator().label }}, {{ store.table()?.years?.[0] }}–{{ store.table()?.years?.at(-1) }}</h2>
+    @if (store.loading() && !store.table()) {
+      <p class="state" role="status">Loading from Eurostat…</p>
+    } @else if (store.table(); as table) {
+      <app-line-chart
+        [series]="series()"
+        [xLabels]="table.years"
+        [formatTick]="formatTick()"
+        [ariaLabel]="store.indicator().label + ' by year for the selected countries and the EU-27 average'"
+      />
+      <table class="summary">
+        <caption>Latest values</caption>
+        <thead>
+          <tr><th scope="col">Country</th><th scope="col">Year</th><th scope="col">Value</th></tr>
+        </thead>
+        <tbody>
+          @for (row of summary(); track row.id) {
+            <tr [attr.data-geo]="row.id">
+              <th scope="row"><span class="dot" [style.background]="row.color"></span>{{ row.label }}</th>
+              <td>{{ row.year }}</td>
+              <td class="num">{{ row.value }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  <aside class="panel" aria-labelledby="pick-heading">
+    <h2 id="pick-heading">Countries</h2>
+    <p class="hint">Pick up to {{ max }}. The EU-27 average is always shown.</p>
+    <ul class="picker">
+      @for (c of countries; track c.code) {
+        <li>
+          <label class="check" [class.check--home]="c.code === 'HU'">
+            <input
+              type="checkbox"
+              [checked]="isSelected(c.code)"
+              [disabled]="!isSelected(c.code) && store.compared().length >= max"
+              (change)="toggle(c.code)"
+            />
+            {{ c.name }}
+          </label>
+        </li>
+      }
+    </ul>
+  </aside>
+</div>
