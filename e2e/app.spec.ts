@@ -23,13 +23,14 @@ test.describe('table view', () => {
     const requested = await mockEurostat(page);
     await page.goto('./');
     await expect(page.locator('[row-id="HU"]').first()).toBeVisible();
-    await page.getByLabel('Indicator').selectOption('gdp-per-capita');
+    const picker = page.getByRole('combobox', { name: 'Indicator' });
+    await picker.selectOption('gdp-per-capita');
     await expect(page).toHaveURL(/indicator=gdp-per-capita/);
     await expect(page.locator('.ag-center-cols-container [row-id="HU"]')).toContainText('€');
     expect(requested).toContain('nama_10_pc');
 
     await page.reload();
-    await expect(page.getByLabel('Indicator')).toHaveValue('gdp-per-capita');
+    await expect(picker).toHaveValue('gdp-per-capita');
   });
 
   test('shows an error with a retry when Eurostat is down', async ({ page }) => {
