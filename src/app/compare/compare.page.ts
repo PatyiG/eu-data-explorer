@@ -63,6 +63,12 @@ export class ComparePage {
     });
   });
 
+  protected readonly heading = computed(() => {
+    const years = this.store.table()?.years ?? [];
+    const label = this.store.indicator().label;
+    return years.length ? `${label}, ${years[0]}–${years[years.length - 1]}` : label;
+  });
+
   protected readonly formatTick = computed(() => {
     const indicator = this.store.indicator();
     return (v: number) => formatValue(v, { ...indicator, decimals: Math.abs(v) < 10 && v % 1 !== 0 ? 1 : 0 });

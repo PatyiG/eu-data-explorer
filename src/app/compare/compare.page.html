@@ -1,6 +1,6 @@
 <div class="layout">
   <section class="panel" aria-labelledby="chart-heading">
-    <h2 id="chart-heading">{{ store.indicator().label }}, {{ store.table()?.years?.[0] }}–{{ store.table()?.years?.at(-1) }}</h2>
+    <h2 id="chart-heading">{{ heading() }}</h2>
     @if (store.loading() && !store.table()) {
       <p class="state" role="status">Loading from Eurostat…</p>
     } @else if (store.table(); as table) {

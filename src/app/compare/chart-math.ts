@@ -52,6 +52,29 @@ export function niceDomain(min: number, max: number, count = 5): { min: number; 
   return { min: Math.floor(min / step) * step, max: Math.ceil(max / step) * step, step };
 }
 
+/**
+ * Moves end-of-line labels apart so they never overlap: keeps the original order,
+ * enforces a minimum gap, then shifts everything back inside [min, max] if needed.
+ * Returns the adjusted positions in the input order.
+ */
+export function spreadLabels(positions: readonly number[], gap: number, min: number, max: number): number[] {
+  const order = positions.map((y, i) => ({ y, i })).sort((a, b) => a.y - b.y);
+  for (let k = 1; k < order.length; k++) {
+    order[k].y = Math.max(order[k].y, order[k - 1].y + gap);
+  }
+  const overflow = order.length ? order[order.length - 1].y - max : 0;
+  if (overflow > 0) {
+    for (let k = order.length - 1; k >= 0; k--) {
+      const limit = k === order.length - 1 ? max : order[k + 1].y - gap;
+      order[k].y = Math.min(order[k].y, limit);
+    }
+  }
+  for (const o of order) o.y = Math.max(o.y, min);
+  const out = new Array<number>(positions.length);
+  for (const o of order) out[o.i] = o.y;
+  return out;
+}
+
 export function buildChart(series: readonly ChartSeries[], xLabels: readonly string[], box: Box): ChartGeometry {
   const innerW = box.width - box.left - box.right;
   const innerH = box.height - box.top - box.bottom;

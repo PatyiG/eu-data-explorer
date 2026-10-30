@@ -1,4 +1,4 @@
-import { Box, buildChart, niceDomain, niceStep } from './chart-math';
+import { Box, buildChart, niceDomain, niceStep, spreadLabels } from './chart-math';
 
 const box: Box = { width: 200, height: 120, top: 10, right: 10, bottom: 10, left: 10 };
 
@@ -36,6 +36,14 @@ describe('chart-math', () => {
 
   it('returns nothing to draw without data', () => {
     expect(buildChart([{ id: 'a', points: [{ x: '1', y: null }] }], ['1'], box).paths).toEqual([]);
+  });
+
+  it('spreads overlapping end labels apart and keeps them in bounds', () => {
+    expect(spreadLabels([50, 52, 51], 14, 0, 200)).toEqual([50, 78, 64]);
+    expect(spreadLabels([10, 100], 14, 0, 200)).toEqual([10, 100]); // already apart
+    const bottom = spreadLabels([195, 196, 197], 14, 0, 200);
+    expect(Math.max(...bottom)).toBe(200);
+    expect(bottom).toEqual([172, 186, 200]);
   });
 
   it('thins out x labels on long ranges but keeps the last one', () => {

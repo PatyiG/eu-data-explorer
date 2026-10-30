@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { Box, ChartSeries, buildChart } from './chart-math';
+import { Box, ChartSeries, buildChart, spreadLabels } from './chart-math';
 
 export interface LineSeries extends ChartSeries {
   label: string;
@@ -9,6 +9,7 @@ export interface LineSeries extends ChartSeries {
 }
 
 const BOX: Box = { width: 720, height: 360, top: 16, right: 110, bottom: 32, left: 64 };
+const LABEL_GAP = 15;
 
 /** A dependency-free SVG line chart; geometry comes from the pure `buildChart`. */
 @Component({
@@ -41,7 +42,7 @@ const BOX: Box = { width: 720, height: 360, top: 16, right: 110, bottom: 32, lef
         />
         @if (p.last; as last) {
           <circle [attr.cx]="last.x" [attr.cy]="last.y" r="3.5" [attr.fill]="p.series.color" />
-          <text class="end-label" [attr.x]="last.x + 8" [attr.y]="last.y" dominant-baseline="middle" [attr.fill]="p.series.color">
+          <text class="end-label" [attr.x]="last.x + 8" [attr.y]="p.labelY" dominant-baseline="middle" [attr.fill]="p.series.color">
             {{ p.series.label }}
           </text>
         }
@@ -69,8 +70,14 @@ export class LineChart {
   protected readonly geometry = computed(() => buildChart(this.series(), this.xLabels(), BOX));
   protected readonly paths = computed(() => {
     const byId = new Map(this.series().map((s) => [s.id, s]));
-    return this.geometry()
-      .paths.filter((p) => p.d)
-      .map((p) => ({ ...p, series: byId.get(p.id)! }));
+    const drawn = this.geometry().paths.filter((p) => p.d);
+    // Lines often end close together; nudge their labels apart so they stay readable.
+    const labelYs = spreadLabels(
+      drawn.map((p) => p.last?.y ?? 0),
+      LABEL_GAP,
+      BOX.top,
+      BOX.height - BOX.bottom,
+    );
+    return drawn.map((p, i) => ({ ...p, series: byId.get(p.id)!, labelY: labelYs[i] }));
   });
 }
